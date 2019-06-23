@@ -65,6 +65,7 @@ $ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
 
 #### (Option 2) Get the Book of Mormon from another source.
 
+- Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
 - Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) from Project Gutenberg
 - Download the [Book of Mormon - 1830 edition](https://www.loc.gov/rr/rarebook/digitalcoll/digitalcoll-mormon.html) (PDF) from Library of Congress
 - Download the [Book of Mormon - 1830 edition](http://www.xristian.org/ft/mormbomtext.pdf) (PDF) from Xristian.org
