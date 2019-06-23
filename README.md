@@ -45,6 +45,8 @@ $ mkdir library
 $ bundle exec bin/archdown -l ./library -y 1650-1830
 ```
 
+(This may take several **days**)
+
 Note that archive.org has since changed its policies to limit the tool to downloading 10,000 files at a time, so it may require some manual restarting, updating the start year each time to avoid redundant downloading.
 
 
@@ -53,6 +55,13 @@ Note that archive.org has since changed its policies to limit the tool to downlo
 #### (Option 1 - Recommended) Download our Book of Mormon Database Tool.
 
 The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool developed by the Wordtree Foundation has the 1830 original edition.
+
+Write the entire Book of Mormon, 1830 edition, without verse or chapter numbers to "bom.txt":
+
+```
+$ bundle install
+$ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
+```
 
 #### (Option 2) Get the Book of Mormon from another source.
 
