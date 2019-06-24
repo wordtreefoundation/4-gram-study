@@ -2,7 +2,7 @@
 
 **NOTE:** This document is a work-in-progress as of 2019-06-21.
 
-This repository documents the 4-gram study conducted in 2013 by the Wordtree Foundation, specifically Duane & Chris Johnson. The study connected the Book of Mormon (1830) and The Late War Between the United States and Great Britain, by Gilbert Hunt (1812). Other books of interest included The First Book of Napoleon and the Apocrypha.
+This repository documents the 4-gram study conducted in 2013 by the Wordtree Foundation, specifically Duane & Chris Johnson. The [study](http://wordtree.org/the-late-war/) connected the Book of Mormon (1830) and The Late War Between the United States and Great Britain, by Gilbert Hunt (1812). Other books of interest included The First Book of Napoleon and the Apocrypha.
 
 The intent of this document is to make it easy to reproduce and/or extend the results of the study.
 
