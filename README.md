@@ -56,6 +56,8 @@ Note that archive.org has since changed its policies to limit the tool to downlo
 
 ### 2. Get the Book of Mormon, original 1830 edition.
 
+To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon to compare (PDFs, and especially scanned images of pages won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
+
 #### (Option 1 - Recommended) Download our Book of Mormon Database Tool.
 
 The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool developed by the Wordtree Foundation has the 1830 original edition.
