@@ -28,7 +28,11 @@ The following directions should replicate the results of the study, with as much
 
 #### (Option 1 - Recommended) Download our prepared data directly.
 
-**TODO:** link to prepared data
+We've prepared an archive of books from 1650 to 1820, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1820.tar.gz).
+
+**NOTE:** COMING SOON: 1820-1830 books to be included as well.
+
+**TODO:** include 1820s books in tar.gz archive
 
 
 #### (Option 2) Download English-language books from archive.org
