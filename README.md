@@ -1,6 +1,6 @@
 # The 4-gram Study
 
-**NOTE:** This document is a work-in-progress as of 2019-06-21.
+**NOTE:** This document is a work-in-progress as of 2019-06-26.
 
 This repository documents the 4-gram study conducted in 2013 by the Wordtree Foundation, specifically Duane & Chris Johnson. The [study](http://wordtree.org/the-late-war/) connected the Book of Mormon (1830) and The Late War Between the United States and Great Britain, by Gilbert Hunt (1812). Other books of interest included The First Book of Napoleon and the Apocrypha.
 
@@ -28,12 +28,9 @@ The following directions should replicate the results of the study, with as much
 
 #### (Option 1 - Recommended) Download our prepared data directly.
 
-We've prepared an archive of books from 1650 to 1820, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1820.tar.gz) (about 20GB).
+We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB).
 
-**NOTE:** COMING SOON: 1820-1830 books to be included as well.
-
-**TODO:** include 1820s books in tar.gz archive
-
+These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s).
 
 #### (Option 2) Download English-language books from archive.org
 
