@@ -93,6 +93,14 @@ So for example, you could write an xarg one-liner to tally all occurrences of al
 find library -name "*.md" | xargs -n 1 ./ngram-tally baseline.tkvdb
 ```
 
+Since we kept our library of books in a directory above `ngram-tools`, and also wanted to time how long each book took to process, here's how we did it:
+
+```
+find ../library/ -name "*.md" | xargs -n 1 time -f'Elapsed Time: %e seconds\n' ./tally-ngrams baseline.tkvdb
+```
+
+Note that calculating the baseline may take a very long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
+
 ### 4. Create a score for each book
 
 TODO: steps to reproduce scoring
