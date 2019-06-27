@@ -77,7 +77,21 @@ The PDF versions will need some work by you before they can be used as text in t
 
 ### 3. Process pre-1830s books to calculate rough Language Model
 
-TODO: steps to reproduce "rough language model"
+In order to properly weight the significance of matching ngrams, we need a rough "language model". What this means is that rather than using intuition to tell us whether a sequence of words is rare, we should use math. For instance, "it came to pass" might be in both the Book of Mormon and a sermon preached in 1820, but that [doesn't mean they are connected](https://books.google.com/ngrams/graph?content=it+came+to+pass&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cit%20came%20to%20pass%3B%2Cc0#t1%3B%2Cit%20came%20to%20pass%3B%2Cc0) because "it came to pass" is a very common 4-gram.
+
+By "rough" language model, we mean that this isn't a sophisticated language model, it's just a tally of occurrences. In a future study, it would be much better to use a proper language model. But in 2013, a tally is what we used.
+
+Using [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) from the Wordtree Foundation, you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded:
+
+```
+./ngram-tally baseline.tkvdb <any-book-in-the-library.md>
+```
+
+So for example, you could write an xarg one-liner to tally all occurrences of all 4-grams in all books in the library like this:
+
+```
+find library -name "*.md" | xargs ./ngram-tally baseline.tkvdb
+```
 
 ### 4. Create a score for each book
 
