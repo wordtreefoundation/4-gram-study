@@ -90,7 +90,7 @@ Using [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) from the 
 So for example, you could write an xarg one-liner to tally all occurrences of all 4-grams in all books in the library like this:
 
 ```
-find library -name "*.md" | xargs ./ngram-tally baseline.tkvdb
+find library -name "*.md" | xargs -n 1 ./ngram-tally baseline.tkvdb
 ```
 
 ### 4. Create a score for each book
