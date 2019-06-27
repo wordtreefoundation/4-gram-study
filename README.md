@@ -99,6 +99,12 @@ Since we kept our library of books in a directory above `ngram-tools`, and also 
 find ../library/ -name "*.md" | xargs -n 1 time -f'Elapsed Time: %e seconds\n' ./tally-ngrams baseline.tkvdb
 ```
 
+If you have the GNU `parallel` command-line tool installed, here's a way to make use of 4 cores and speed things up:
+
+```
+find ../library/ -name "*.md" | parallel -j 4 ./tally-ngrams baseline.tkvdb {}
+```
+
 Note that calculating the baseline may take a very long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
 
 ### 4. Create a score for each book
