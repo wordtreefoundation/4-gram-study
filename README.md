@@ -63,14 +63,14 @@ Throughout this guide, we will assume a folder structure as follows:
 To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon (scanned images of pages, even in PDF format, won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
 
 #### (Option 1 - Recommended) Download the Book of Mormon from our Books Repository
-*(~2min on a 100Mbit connection)*
+*(~2min on a 150Mbit network)*
 
 We have a repository of [pseudo-biblical books](https://github.com/wordtreefoundation/books) (i.e. books that mimic the "Biblical Style" of the King James Version of the bible--if you're interested in this American phenomenon, look up Eran Shalev and [American Zion](https://www.amazon.com/American-Zion-Testament-Political-Revolution/dp/0300205902)). This repository includes the Book of Mormon.
 
 Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
 
 #### (Option 2) Download our Book of Mormon Database Tool
-*(~20min on a 100Mbit connection)*
+*(~20min on a 150Mbit network)*
 
 The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool (developed by the Wordtree Foundation) has the 1830 original edition, among several other editions. It is very flexible, and allows you to do things like only compare ranges of chapters or verses, or choose which edition of the Book of Mormon you'd like to compare.
 
@@ -83,7 +83,7 @@ $ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
 ```
 
 #### (Option 3) Get the Book of Mormon from Another Source
-*(~5min on a 100Mbit conneciton)*
+*(~5min on a 150Mbit network)*
 
 - Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) (TXT) from Project Gutenberg
 - Download the [Book of Mormon - 1830 edition](https://www.loc.gov/rr/rarebook/digitalcoll/digitalcoll-mormon.html) (PDF) from Library of Congress
@@ -95,14 +95,14 @@ The PDF versions will need some work by you before they can be used as text in t
 ### 2. Get English-language Books as Text Files, 1650 to 1830
 
 #### (Option 1 - Recommended) Download our prepared data directly
-*(~1hr on a 100Mbit connection)*
+*(~1hr on a 150Mbit network)*
 
 We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB). This archive was downloaded in June of 2019.
 
 These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s). They've been stored in sub-folders and sub-sub-folders so that a normal filesystem will handle the large quantity of books.
 
 #### (Option 2) Download English-language books from archive.org
-*(~3 days on a 100Mbit connection)*
+*(~3 days on a 150Mbit network)*
 
 The [archdown](https://github.com/wordtreefoundation/archdown) command-line tool (developed by the Wordtree Foundation) is a helpful tool for querying & downloading directly from archive.org. It also arranges downloads in a tree structure so the filesystem can hold lots of books.
 
@@ -121,7 +121,7 @@ Note that archive.org has since changed its policies to limit the tool to downlo
 
 
 ### 3. Count the number of 4-grams in each pre-1830 book, including the Book of Mormon
-*(~6hrs on a 4-core 2Ghz machine with 1TB SSD & 64GB of RAM)*
+*(~6hrs on a 4-core 3.5Ghz machine with 1TB SSD & 64GB of RAM)*
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
