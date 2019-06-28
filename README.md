@@ -135,7 +135,7 @@ Now that we know how to count 4-grams in one book, let's apply this to counting 
 ```
 $ find ../library/ -name "*.md" | \
   xargs -n 1 -I {} \
-  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr >{}.4grams"
+  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr | gzip -c >{}.4grams.gz"
 ```
 
 Breaking it down:
@@ -144,16 +144,8 @@ Breaking it down:
 - The `xargs` command takes the list of files as input and sends each one as an argument to the next command (`text-to-ngrams`). We need `-n 1` because `text-to-ngrams` doesn't take multiple files as input (just one file). We also use `-I {}` because we need to be able to specify where to "insert" each book filename in the next command.
 - The `sh` command creates a new shell. This is necessary because we need to pipe several commands together.
 - Next, we emit each 4-gram in each file via `text-to-ngrams`, then sort and count (via `uniq -c`) the ngrams. The final `sort -bgr` just sorts the count in reverse order so that we get the most common 4-grams first.
+- And then we zip the results using `gzip -c` which sends the output to STDOUT.
 - Finally, we redirect the output of all of this pipe-chain to the original filename (in its original `library` directory) but with the `.4grams` suffix appended so that we don't clobber the original text ('.md') file.
-
-It can be handy to get timing information, and if you are space- or I/O-constrained, you may want to gzip the final result:
-
-```
-$ find ../library/ -name "*.md" | \
-  xargs -n 1 -I {} \
-  time -f'Elapsed Time: %e seconds\n' \
-  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr | gzip -c >{}.4grams.gz"
-```
 
 For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org/software/parallel/):
 
