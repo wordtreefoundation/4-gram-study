@@ -134,7 +134,7 @@ $ find ../library/ -name "*.md" | \
   sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr | gzip -c >{}.4grams.gz"
 ```
 
-For faster processing on a mult-core CPU, use GNU Parallel:
+For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org/software/parallel/):
 
 ```
 $ find ../library/ -name "*.md" | \
@@ -168,7 +168,7 @@ Since we kept our library of books in a directory above `ngram-tools`, and also 
 find ../library/ -name "*.md" | xargs -n 1 time -f'Elapsed Time: %e seconds\n' ./tally-ngrams baseline.tkvdb
 ```
 
-If you have the GNU `parallel` command-line tool installed, here's a way to make use of 4 cores and speed things up:
+If you have the [GNU parallel](https://www.gnu.org/software/parallel/) command-line tool installed, here's a way to make use of 4 cores and speed things up:
 
 ```
 find ../library/ -name "*.md" | parallel -j 4 ./tally-ngrams baseline.tkvdb {}
