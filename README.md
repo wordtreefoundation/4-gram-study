@@ -43,7 +43,7 @@ To algorithmically compare the Book of Mormon & other books, we need a text-only
 #### (Option 1 - Recommended) Download the Book of Mormon from our Books Repository
 *(~2min on a 100Mbit connection)*
 
-We have a repository of books that mimic the "Biblical Style" of the King James Version of the bible, including the Book of Mormon. (If you're interested in this interesting American phenomenon, look up Eran Shalev and [American Zion](https://www.amazon.com/American-Zion-Testament-Political-Revolution/dp/0300205902)).
+We have a repository of [pseudo-biblical books](https://github.com/wordtreefoundation/books) (i.e. books that mimic the "Biblical Style" of the King James Version of the bible--if you're interested in this American phenomenon, look up Eran Shalev and [American Zion](https://www.amazon.com/American-Zion-Testament-Political-Revolution/dp/0300205902)). This repository includes the Book of Mormon.
 
 Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
 
