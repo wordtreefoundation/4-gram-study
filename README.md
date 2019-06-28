@@ -25,15 +25,17 @@ The following directions should replicate the results of the study, with as much
 
 Note that we assume a Unix-type environment for the following replication. All of the commands should work on Mac OS X, and in Windows, you can install the Ubuntu subsystem and it will work as well.
 
-### 1. Get English-language Books as Text Files, 1650 to 1830.
+### 1. Get English-language Books as Text Files, 1650 to 1830
 
-#### (Option 1 - Recommended) Download our prepared data directly.
+#### (Option 1 - Recommended) Download our prepared data directly
+**(~1hr on a 100Mbit connection)**
 
 We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB).
 
 These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s).
 
 #### (Option 2) Download English-language books from archive.org
+**(~3 days on a 100Mbit connection)**
 
 The [archdown](https://github.com/wordtreefoundation/archdown) command-line tool developed by the Wordtree Foundation is a helpful tool for this purpose.
 
@@ -52,11 +54,12 @@ $ bundle exec bin/archdown -l ./library -y 1650-1830
 Note that archive.org has since changed its policies to limit the tool to downloading 10,000 files at a time, so it may require some manual restarting, updating the start year each time to avoid redundant downloading.
 
 
-### 2. Get the Book of Mormon, original 1830 edition.
+### 2. Get the Book of Mormon, original 1830 edition
 
 To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon to compare (PDFs, and especially scanned images of pages won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
 
-#### (Option 1 - Recommended) Download our Book of Mormon Database Tool.
+#### (Option 1 - Recommended) Download our Book of Mormon Database Tool
+**(~20min on a 100Mbit connection)**
 
 The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool developed by the Wordtree Foundation has the 1830 original edition.
 
@@ -67,7 +70,8 @@ $ bundle install
 $ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
 ```
 
-#### (Option 2) Get the Book of Mormon from another source.
+#### (Option 2) Get the Book of Mormon from another source
+**(~5min on a 100Mbit conneciton)**
 
 - Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
 - Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) from Project Gutenberg
@@ -78,6 +82,7 @@ The PDF versions will need some work by you before they can be used as text in t
 
 
 ### 3. Count the number of 4-grams in each pre-1830 book, including the Book of Mormon
+**(~6hrs on a 4-core 2Ghz machine with SSD & 64GB of RAM)**
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
