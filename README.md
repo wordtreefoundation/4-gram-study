@@ -131,6 +131,15 @@ $ find ../library/ -name "*.md" | \
   sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr | gzip -c >{}.4grams.gz"
 ```
 
+For faster processing on a mult-core CPU, use GNU Parallel:
+
+```
+$ find ../library/ -name "*.md" | \
+  parallel -j 0 ./text-to-ngrams 4 {} '|' \
+    sort '|' uniq -c '|' sort -bgr '|' gzip -c \
+    '>' {}.4grams.gz
+```
+
 ### 4. Process pre-1830s books to calculate rough Language Model
 
 In order to properly weight the significance of matching ngrams, we need a rough "language model". What this means is that rather than using intuition to tell us whether a sequence of words is rare, we should use math. For instance, "it came to pass" might be in both the Book of Mormon and a sermon preached in 1820, but that [doesn't mean they are connected](https://books.google.com/ngrams/graph?content=it+came+to+pass&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cit%20came%20to%20pass%3B%2Cc0#t1%3B%2Cit%20came%20to%20pass%3B%2Cc0) because "it came to pass" is a very common 4-gram.
