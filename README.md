@@ -25,58 +25,79 @@ The following directions should replicate the results of the study, with as much
 
 Note that we assume a Unix-type environment for the following replication. All of the commands should work on Mac OS X, and in Windows, you can install the Ubuntu subsystem and it will work as well.
 
-### 1. Get English-language Books as Text Files, 1650 to 1830
+**Folder Structure**
+
+Throughout this guide, we will assume a folder structure as follows:
+
+```
++- study
+   +- library       <-- 150k books from archive.org
+   +- bomdb         <-- various editions of the Book of Mormon
+   +- ngram-tools   <-- fast C-based tools for processing text as ngrams
+```
+
+### 1. Get the Book of Mormon, original 1830 edition
+
+To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon (scanned images of pages, even in PDF format, won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
+
+#### (Option 1 - Recommended) Download the Book of Mormon from our Books Repository
+*(~2min on a 100Mbit connection)*
+
+We have a repository of books that mimic the "Biblical Style" of the King James Version of the bible, including the Book of Mormon. (If you're interested in this interesting American phenomenon, look up Eran Shalev and [American Zion](https://www.amazon.com/American-Zion-Testament-Political-Revolution/dp/0300205902)).
+
+Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
+
+#### (Option 2) Download our Book of Mormon Database Tool
+*(~20min on a 100Mbit connection)*
+
+The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool (developed by the Wordtree Foundation) has the 1830 original edition, among several other editions. It is very flexible, and allows you to do things like only compare ranges of chapters or verses, or choose which edition of the Book of Mormon you'd like to compare.
+
+Download & install bomdb, then write the entire Book of Mormon, 1830 edition, without verse or chapter numbers to "bom.txt":
+
+```
+$ cd bomdb
+$ bundle install
+$ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
+```
+
+#### (Option 3) Get the Book of Mormon from Another Source
+*(~5min on a 100Mbit conneciton)*
+
+- Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) from Project Gutenberg
+- Download the [Book of Mormon - 1830 edition](https://www.loc.gov/rr/rarebook/digitalcoll/digitalcoll-mormon.html) (PDF) from Library of Congress
+- Download the [Book of Mormon - 1830 edition](http://www.xristian.org/ft/mormbomtext.pdf) (PDF) from Xristian.org
+
+The PDF versions will need some work by you before they can be used as text in the next step.
+
+
+### 2. Get English-language Books as Text Files, 1650 to 1830
 
 #### (Option 1 - Recommended) Download our prepared data directly
 *(~1hr on a 100Mbit connection)*
 
 We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB).
 
-These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s).
+These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s). They've been stored in sub-folders and sub-sub-folders so that a normal filesystem will handle the large quantity of books.
 
 #### (Option 2) Download English-language books from archive.org
 *(~3 days on a 100Mbit connection)*
 
-The [archdown](https://github.com/wordtreefoundation/archdown) command-line tool developed by the Wordtree Foundation is a helpful tool for this purpose.
+The [archdown](https://github.com/wordtreefoundation/archdown) command-line tool (developed by the Wordtree Foundation) is a helpful tool for querying & downloading directly from archive.org. It also arranges downloads in a tree structure so the filesystem can hold lots of books.
 
-Prerequisites: Ruby 2.x
+*Prerequisites: Ruby 2.x*
 
 Download and unzip https://github.com/wordtreefoundation/archdown/archive/master.zip (or use `git clone git@github.com:wordtreefoundation/archdown.git` if you're a developer). Then install & run `archdown`:
 
 ```
+$ cd archdown
 $ bundle install
-$ mkdir library
-$ bundle exec bin/archdown -l ./library -y 1650-1830
+$ mkdir ../library
+$ bundle exec bin/archdown -l ../library -y 1650-1830
 ```
 
 Note that archive.org has since changed its policies to limit the tool to downloading 10,000 files at a time, so it may require some manual restarting, updating the start year each time to avoid redundant downloading.
 
 
-### 2. Get the Book of Mormon, original 1830 edition
-
-To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon to compare (PDFs, and especially scanned images of pages won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
-
-#### (Option 1 - Recommended) Download our Book of Mormon Database Tool
-*(~20min on a 100Mbit connection)*
-
-The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool developed by the Wordtree Foundation has the 1830 original edition.
-
-Write the entire Book of Mormon, 1830 edition, without verse or chapter numbers to "bom.txt":
-
-```
-$ bundle install
-$ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
-```
-
-#### (Option 2) Get the Book of Mormon from another source
-*(~5min on a 100Mbit conneciton)*
-
-- Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
-- Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) from Project Gutenberg
-- Download the [Book of Mormon - 1830 edition](https://www.loc.gov/rr/rarebook/digitalcoll/digitalcoll-mormon.html) (PDF) from Library of Congress
-- Download the [Book of Mormon - 1830 edition](http://www.xristian.org/ft/mormbomtext.pdf) (PDF) from Xristian.org
-
-The PDF versions will need some work by you before they can be used as text in the next step.
 
 
 ### 3. Count the number of 4-grams in each pre-1830 book, including the Book of Mormon
