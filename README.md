@@ -30,6 +30,7 @@ We assume a Unix-type environment. All of the commands should work on Mac OS X. 
 You should have the following compilers, tools, and utilities:
 
 - `gcc` (GNU C Compiler)
+- `git` (Distributed Version Control System)
 - text tools like `awk`, `sed`, `sort`, `uniq`, `xargs`
 - `parallel` (GNU Parallel)
 - `ruby` (Ruby interpreter)
@@ -74,7 +75,7 @@ $ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
 #### (Option 3) Get the Book of Mormon from Another Source
 *(~5min on a 100Mbit conneciton)*
 
-- Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) from Project Gutenberg
+- Download the [Book of Mormon - unknown edition](http://www.gutenberg.org/ebooks/17) (TXT) from Project Gutenberg
 - Download the [Book of Mormon - 1830 edition](https://www.loc.gov/rr/rarebook/digitalcoll/digitalcoll-mormon.html) (PDF) from Library of Congress
 - Download the [Book of Mormon - 1830 edition](http://www.xristian.org/ft/mormbomtext.pdf) (PDF) from Xristian.org
 
@@ -97,7 +98,7 @@ The [archdown](https://github.com/wordtreefoundation/archdown) command-line tool
 
 *Prerequisites: Ruby 2.x*
 
-Download and unzip https://github.com/wordtreefoundation/archdown/archive/master.zip (or use `git clone git@github.com:wordtreefoundation/archdown.git` if you're a developer). Then install & run `archdown`:
+Download and unzip https://github.com/wordtreefoundation/archdown/archive/master.zip (or use `git clone git@github.com:wordtreefoundation/archdown.git`). Then install & run `archdown`:
 
 ```
 $ cd archdown
