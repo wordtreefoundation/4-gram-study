@@ -75,7 +75,7 @@ The PDF versions will need some work by you before they can be used as text in t
 #### (Option 1 - Recommended) Download our prepared data directly
 *(~1hr on a 100Mbit connection)*
 
-We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB).
+We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB). This archive was downloaded in June of 2019.
 
 These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s). They've been stored in sub-folders and sub-sub-folders so that a normal filesystem will handle the large quantity of books.
 
