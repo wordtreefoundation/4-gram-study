@@ -145,7 +145,7 @@ Breaking it down:
 - The `sh` command creates a new shell. This is necessary because we need to pipe several commands together.
 - Next, we emit each 4-gram in each file via `text-to-ngrams`, then sort and count (via `uniq -c`) the ngrams. The final `sort -bgr` just sorts the count in reverse order so that we get the most common 4-grams first.
 - And then we zip the results using `gzip -c` which sends the output to STDOUT.
-- Finally, we redirect the output of all of this pipe-chain to the original filename (in its original `library` directory) but with the `.4grams` suffix appended so that we don't clobber the original text ('.md') file.
+- Finally, we redirect the output of the whole pipe chain to the original file location (in its original `library` sub-folder) but with the `.4grams.gz` suffix appended so that we don't clobber the original text ('.md') file.
 
 For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org/software/parallel/):
 
