@@ -200,6 +200,10 @@ $ find ../library/ -mindepth 2 -maxdepth 2 -type d | \
 - Then, we use the `reduce.sh` script to sum up the ngram counts in each set of files in each leaf folder.
 - Finally, we send the output to a `reduced.4grams` file in the leaf folder. Since each folder has a unique name, a simple naming scheme like `reduced.4grams` will work.
 
+```
+find ../library/ -name '*.md.4grams' | parallel --xargs cat | parallel -j0 --progress --block 5M --roundrobin --pipe --files --results output ./reduce.sh
+```
+
 **TODO: explain next reduction step**
 
 Note that calculating the baseline may take a long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
