@@ -174,31 +174,27 @@ In order to properly weight the significance of matching ngrams, we need a rough
 
 By "rough" language model, we mean that this isn't a sophisticated language model, it's just a tally of occurrences. In a future study, it would be much better to use a proper language model. But in 2013, a tally is what we used.
 
-Using our [ngram-tools](https://github.com/wordtreefoundation/ngram-tools), you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded:
+Using our [ngram-tools](https://github.com/wordtreefoundation/ngram-tools), you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded.
+
+We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. The folder structure of the library will serve as a kind of "aggregator node" system so that we can save off work in intermediate steps. First, let's sum up the leaf (folder) nodes:
 
 ```
-./ngram-tally baseline.tkvdb <any-book-in-the-library.md>
+$ find ../library/ -mindepth 2 -maxdepth 2 -type d | \
+  parallel -j 0 --progress find {} -type f '|' \
+    grep 4grams.gz$ '|' \
+    xargs gunzip -c '|' ./reduce.sh '|' sort -bgr \
+    '>' {}/reduced.4grams
 ```
 
-So for example, you could write an xarg one-liner to tally all occurrences of all 4-grams in all books in the library like this:
+- Here, we've asked `find` to get only the level 2 subfolders (e.g. `../library/00/01/`, `../library/00/42/`, `../library/ab/og/`, etc.) which are our "leaf" nodes in the map-reduce algorithm we're manually executing.
+- We pipe the list of leaf folders into `parallel` and ask it to use all available CPU cores (`-j 0') and to show us `--progress` as it goes. We use an additional `find` at this step to get a list of files in each leaf folder, which will be piped to the next step.
+- We filter for files ending in `4grams.gz` using `grep`. This will is necessary because the library also contains raw text files (which we don't need at this step).
+- Then, we use the `reduce.sh` script to sum up the ngram counts in each set of files in each leaf folder.
+- Finally, we send the output to a `reduced.4grams` file in the leaf folder. Since each folder has a unique name, a simple naming scheme like `reduced.4grams` will work.
 
-```
-find library -name "*.md" | xargs -n 1 ./ngram-tally baseline.tkvdb
-```
+**TODO: explain next reduction step**
 
-Since we kept our library of books in a directory above `ngram-tools`, and also wanted to time how long each book took to process, here's how we did it:
-
-```
-find ../library/ -name "*.md" | xargs -n 1 time -f'Elapsed Time: %e seconds\n' ./tally-ngrams baseline.tkvdb
-```
-
-If you have the [GNU parallel](https://www.gnu.org/software/parallel/) command-line tool installed, here's a way to make use of 4 cores and speed things up:
-
-```
-find ../library/ -name "*.md" | parallel -j 4 ./tally-ngrams baseline.tkvdb {}
-```
-
-Note that calculating the baseline may take a very long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
+Note that calculating the baseline may take a long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
 
 
 ### 5. Create a score for each book
