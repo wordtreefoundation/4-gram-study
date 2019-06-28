@@ -109,17 +109,15 @@ $ bundle exec bin/archdown -l ../library -y 1650-1830
 Note that archive.org has since changed its policies to limit the tool to downloading 10,000 files at a time, so it may require some manual restarting, updating the start year each time to avoid redundant downloading.
 
 
-
-
 ### 3. Count the number of 4-grams in each pre-1830 book, including the Book of Mormon
-*(~6hrs on a 4-core 2Ghz machine with SSD & 64GB of RAM)*
+*(~6hrs on a 4-core 2Ghz machine with 1TB SSD & 64GB of RAM)*
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
 Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` (or `.4grams.gz`) file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
 
 ```
-$ ./text-to-ngrams 3 ../bomdb/bom.txt | sort | uniq -c | sort -bgr | gzip -c >bom.4grams.gz
+$ ./text-to-ngrams 3 ../bomdb/bom.txt | sort | uniq -c | sort -bgr >bom.4grams
 Input File: ../bomdb/bom.txt
 size (bytes): 1417363
   ngrams emitted: 253386
@@ -128,7 +126,7 @@ size (bytes): 1417363
 We can check that the `bom.4grams.gz` file contains a list of ngrams, counted & sorted:
 
 ```
-$ gunzip -c bom.4grams.gz | less
+$ less bom.4grams
 
    1398 came to pass
    1396 it came to
@@ -146,7 +144,7 @@ Now that we know how to count 4-grams in one book, let's apply this to counting 
 ```
 $ find ../library/ -name "*.md" | \
   xargs -n 1 -I {} \
-  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr | gzip -c >{}.4grams.gz"
+  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr >{}.4grams"
 ```
 
 Breaking it down:
@@ -155,8 +153,7 @@ Breaking it down:
 - The `xargs` command takes the list of files as input and sends each one as an argument to the next command (`text-to-ngrams`). We need `-n 1` because `text-to-ngrams` doesn't take multiple files as input (just one file). We also use `-I {}` because we need to be able to specify where to "insert" each book filename in the next command.
 - The `sh` command creates a new shell. This is necessary because we need to pipe several commands together.
 - Next, we emit each 4-gram in each file via `text-to-ngrams`, then sort and count (via `uniq -c`) the ngrams. The final `sort -bgr` just sorts the count in reverse order so that we get the most common 4-grams first.
-- And then we zip the results using `gzip -c` which sends the output to STDOUT.
-- Finally, we redirect the output of the whole pipe chain to the original file location (in its original `library` sub-folder) but with the `.4grams.gz` suffix appended so that we don't clobber the original text ('.md') file.
+- Finally, we redirect the output of the whole pipe chain to the original file location (in its original `library` sub-folder) but with the `.4grams` suffix appended so that we don't clobber the original text ('.md') file.
 
 For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org/software/parallel/):
 
@@ -164,8 +161,8 @@ For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org
 $ find ../library/ -name "*.md" | \
   parallel -j 0 --progress --joblog ngrams.joblog \
     ./text-to-ngrams 4 {} '|' \
-    sort '|' uniq -c '|' sort -bgr '|' gzip -c \
-    '>' {}.4grams.gz
+    sort '|' uniq -c '|' sort -bgr \
+    '>' {}.4grams
 ```
 
 ### 4. Process pre-1830s books to calculate rough Language Model
@@ -181,14 +178,14 @@ We'll use a shell-script based "map-reduce" algorithm to vastly speed up calcula
 ```
 $ find ../library/ -mindepth 2 -maxdepth 2 -type d | \
   parallel -j 0 --progress find {} -type f '|' \
-    grep 4grams.gz$ '|' \
-    xargs gunzip -c '|' ./reduce.sh '|' sort -bgr \
+    grep .4grams$ '|' \
+    xargs ./reduce.sh '|' sort -bgr \
     '>' {}/reduced.4grams
 ```
 
 - Here, we've asked `find` to get only the level 2 subfolders (e.g. `../library/00/01/`, `../library/00/42/`, `../library/ab/og/`, etc.) which are our "leaf" nodes in the map-reduce algorithm we're manually executing.
 - We pipe the list of leaf folders into `parallel` and ask it to use all available CPU cores (`-j 0') and to show us `--progress` as it goes. We use an additional `find` at this step to get a list of files in each leaf folder, which will be piped to the next step.
-- We filter for files ending in `4grams.gz` using `grep`. This will is necessary because the library also contains raw text files (which we don't need at this step).
+- We filter for files ending in `.4grams` using `grep`. This will is necessary because the library also contains raw text files (which we don't need at this step).
 - Then, we use the `reduce.sh` script to sum up the ngram counts in each set of files in each leaf folder.
 - Finally, we send the output to a `reduced.4grams` file in the leaf folder. Since each folder has a unique name, a simple naming scheme like `reduced.4grams` will work.
 
