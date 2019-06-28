@@ -125,7 +125,7 @@ Note that archive.org has since changed its policies to limit the tool to downlo
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
-Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` (or `.4grams.gz`) file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
+Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
 
 ```
 $ ./text-to-ngrams 3 ../bomdb/bom.txt | sort | uniq -c | sort -bgr >bom.4grams
@@ -134,7 +134,7 @@ size (bytes): 1417363
   ngrams emitted: 253386
 ```
 
-We can check that the `bom.4grams.gz` file contains a list of ngrams, counted & sorted:
+We can check that the `bom.4grams` file contains a list of ngrams, counted & sorted:
 
 ```
 $ less bom.4grams
