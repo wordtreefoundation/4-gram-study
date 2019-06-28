@@ -23,9 +23,19 @@ The study used data published by [archive.org](https://archive.org/details/texts
 
 The following directions should replicate the results of the study, with as much fidelity as possible to the original study. However, given that some data may have changed in the meantime (e.g. archive.org updates its library with new books, and may improve quality of OCR over time), it's possible to get slightly divergent results.
 
-Note that we assume a Unix-type environment for the following replication. All of the commands should work on Mac OS X, and in Windows, you can install the Ubuntu subsystem and it will work as well.
+### Prerequisites
 
-**Folder Structure**
+We assume a Unix-type environment. All of the commands should work on Mac OS X. In Windows, you can install the Ubuntu subsystem and it will work as well.
+
+You should have the following compilers, tools, and utilities:
+
+- `gcc` (GNU C Compiler)
+- text tools like `awk`, `sed`, `sort`, `uniq`, `xargs`
+- `parallel` (GNU Parallel)
+- `ruby` (Ruby interpreter)
+- `gzip` and `gunzip` (compression commands)
+
+### Folder Structure
 
 Throughout this guide, we will assume a folder structure as follows:
 
@@ -35,6 +45,7 @@ Throughout this guide, we will assume a folder structure as follows:
    +- bomdb         <-- various editions of the Book of Mormon
    +- ngram-tools   <-- fast C-based tools for processing text as ngrams
 ```
+
 
 ### 1. Get the Book of Mormon, original 1830 edition
 
