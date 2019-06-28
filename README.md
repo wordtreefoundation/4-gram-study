@@ -135,7 +135,8 @@ For faster processing on a mult-core CPU, use GNU Parallel:
 
 ```
 $ find ../library/ -name "*.md" | \
-  parallel -j 0 ./text-to-ngrams 4 {} '|' \
+  parallel -j 0 --progress --joblog ngrams.joblog \
+    ./text-to-ngrams 4 {} '|' \
     sort '|' uniq -c '|' sort -bgr '|' gzip -c \
     '>' {}.4grams.gz
 ```
