@@ -188,21 +188,15 @@ We'll use a shell-script based "map-reduce" algorithm to vastly speed up calcula
 
 ```
 $ find ../library/ -mindepth 2 -maxdepth 2 -type d | \
-  parallel -j 0 --progress find {} -type f '|' \
-    grep .4grams$ '|' \
-    xargs ./reduce.sh '|' sort -bgr \
-    '>' {}/reduced.4grams
+  parallel --progress -j0 find {} -name '*.md.4grams' '|' \
+  xargs cat '|' ./reduce.sh '|' \
+  sort -bgr '>' {}/reduced.4grams
 ```
 
 - Here, we've asked `find` to get only the level 2 subfolders (e.g. `../library/00/01/`, `../library/00/42/`, `../library/ab/og/`, etc.) which are our "leaf" nodes in the map-reduce algorithm we're manually executing.
-- We pipe the list of leaf folders into `parallel` and ask it to use all available CPU cores (`-j 0') and to show us `--progress` as it goes. We use an additional `find` at this step to get a list of files in each leaf folder, which will be piped to the next step.
-- We filter for files ending in `.4grams` using `grep`. This will is necessary because the library also contains raw text files (which we don't need at this step).
-- Then, we use the `reduce.sh` script to sum up the ngram counts in each set of files in each leaf folder.
-- Finally, we send the output to a `reduced.4grams` file in the leaf folder. Since each folder has a unique name, a simple naming scheme like `reduced.4grams` will work.
-
-```
-find ../library/ -name '*.md.4grams' | parallel --xargs cat | parallel -j0 --progress --block 5M --roundrobin --pipe --files --results output ./reduce.sh
-```
+- We pipe the list of leaf folders into `parallel` and ask it to use all available CPU cores (`-j0`) and show us `--progress` as it goes. We use an additional `find` at this step to get a list of `.md.4grams` files in each leaf folder, which will be piped to the next step.
+- Then, we use `xargs cat` to concatenate all of the files in the sub-subfolder together, and pipe that to our `reduce.sh` script (from `ngram-tools`) to sum up the ngram counts in each set of files in each leaf folder.
+- Finally, we sort the results by counts, and send the output to a `reduced.4grams` file in the leaf folder. Since each sub-subfolder has a unique name, a simple naming scheme like `reduced.4grams` will work.
 
 **TODO: explain next reduction step**
 
