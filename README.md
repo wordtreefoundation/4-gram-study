@@ -27,14 +27,25 @@ The following directions should replicate the results of the study, with as much
 
 We assume a Unix-type environment. All of the commands should work on Mac OS X. In Windows, you can install the Ubuntu subsystem and it will work as well.
 
-You should have the following compilers, tools, and utilities:
+You should have the following *compilers, tools, and utilities*:
 
 - `gcc` (GNU C Compiler)
+- `ruby` (Ruby interpreter)
 - `git` (Distributed Version Control System)
 - text tools like `awk`, `sed`, `sort`, `uniq`, `xargs`
 - `parallel` (GNU Parallel)
-- `ruby` (Ruby interpreter)
 - `gzip` and `gunzip` (compression commands)
+
+*Hardware & Network*
+
+This documentation assumes hardware specifications as follows:
+
+- 3.5GHz 4-core CPU
+- 64 GB RAM Memory
+- 1 TB SSD Hard Drive
+
+In addition, a broadband connection to the internet was used with 150 MBit download speed.
+
 
 ### Folder Structure
 
@@ -46,7 +57,6 @@ Throughout this guide, we will assume a folder structure as follows:
    +- bomdb         <-- various editions of the Book of Mormon
    +- ngram-tools   <-- fast C-based tools for processing text as ngrams
 ```
-
 
 ### 1. Get the Book of Mormon, original 1830 edition
 
