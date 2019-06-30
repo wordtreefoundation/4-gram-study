@@ -184,19 +184,22 @@ By "rough" language model, we mean that this isn't a sophisticated language mode
 
 Using our [ngram-tools](https://github.com/wordtreefoundation/ngram-tools), you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded.
 
-We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. The folder structure of the library will serve as a kind of "aggregator node" system so that we can save off work in intermediate steps. First, let's sum up the leaf (folder) nodes:
+We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. First, let's get a randomly shuffled list of the entire library's books:
 
 ```
-$ find ../library/ -mindepth 2 -maxdepth 2 -type d | \
-  parallel --progress -j0 find {} -name '*.md.4grams' '|' \
-  xargs cat '|' ./reduce.sh '|' \
-  sort -bgr '>' {}/reduced.4grams
+$ find ../library/ -name '*.md.4grams' | shuf >library.toc
 ```
 
-- Here, we've asked `find` to get only the level 2 subfolders (e.g. `../library/00/01/`, `../library/00/42/`, `../library/ab/og/`, etc.) which are our "leaf" nodes in the map-reduce algorithm we're manually executing.
-- We pipe the list of leaf folders into `parallel` and ask it to use all available CPU cores (`-j0`) and show us `--progress` as it goes. We use an additional `find` at this step to get a list of `.md.4grams` files in each leaf folder, which will be piped to the next step.
-- Then, we use `xargs cat` to concatenate all of the files in the sub-subfolder together, and pipe that to our `reduce.sh` script (from `ngram-tools`) to sum up the ngram counts in each set of files in each leaf folder.
-- Finally, we sort the results by counts, and send the output to a `reduced.4grams` file in the leaf folder. Since each sub-subfolder has a unique name, a simple naming scheme like `reduced.4grams` will work.
+Then, let's sum up the ngrams in sets of 20 books:
+
+```
+$ mkdir output
+$ cat library.toc | \
+   parallel -j0 -N20 \
+      --progress --memfree 16G --joblog jobs.log \
+      --files --tmpdir output \
+      ./tally-ngrams
+```
 
 **TODO: explain next reduction step**
 
