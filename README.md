@@ -153,27 +153,49 @@ $ less bom.4grams
 Now that we know how to count 4-grams in one book, let's apply this to counting the 4-grams in all of our downloaded archive.org books:
 
 ```
-$ find ../library/ -name "*.md" | \
-  xargs -n 1 -I {} \
-  sh -c "./text-to-ngrams 4 {} | sort | uniq -c | sort -bgr >{}.4grams"
+$ find ../library/ -name "*.md" | shuf >library.toc
+$ cat library.toc \
+  | xargs -n 1 -I {} \
+    sh -c "./text-to-ngrams 4 {} | sort | uniq -c >{}.4grams.tallied"
 ```
 
 Breaking it down:
 
 - The `find` command recursively looks for files in a folder that matches a pattern. We need this because filesystems typically can't contain 100,000 files in a single directory so we've created little sub-folders that each contain just a subset of the files. We're looking for ".md" files because the `archdown` command stores the plain-text archive.org books with a yaml header file that is compatible with markdown file format.
+- The `shuf` command randomly shuffles the order of the text files, and we store it in a "table of contents" file called `library.toc`.
+- We use the `library.toc` file to pipe the filenames that need processing to `xargs`.
 - The `xargs` command takes the list of files as input and sends each one as an argument to the next command (`text-to-ngrams`). We need `-n 1` because `text-to-ngrams` doesn't take multiple files as input (just one file). We also use `-I {}` because we need to be able to specify where to "insert" each book filename in the next command.
 - The `sh` command creates a new shell. This is necessary because we need to pipe several commands together.
-- Next, we emit each 4-gram in each file via `text-to-ngrams`, then sort and count (via `uniq -c`) the ngrams. The final `sort -bgr` just sorts the count in reverse order so that we get the most common 4-grams first.
+- Next, we emit each 4-gram in each file via `text-to-ngrams`, then sort and count (via `uniq -c`) the ngrams.
 - Finally, we redirect the output of the whole pipe chain to the original file location (in its original `library` sub-folder) but with the `.4grams` suffix appended so that we don't clobber the original text ('.md') file.
 
 For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org/software/parallel/):
 
 ```
-$ find ../library/ -name "*.md" | \
-  parallel -j 0 --progress --joblog ngrams.joblog \
-    ./text-to-ngrams 4 {} '|' \
-    sort '|' uniq -c '|' sort -bgr \
-    '>' {}.4grams
+$ find ../library/ -name "*.md" | shuf >library.toc
+$ parallel -j4 --progress \
+    -a library.toc \
+    ./text-to-ngrams 4 {} \
+    '|' ./tally-lines -c \
+    '>' {}.4grams.tallied
+```
+
+The `*.md.4grams.tallied` files will contain two columns, the tally column (numbers), followed by the ngrams column (words). The two columns will be separated by a tab character ('\t'):
+
+```
+        5       a added providing for
+        1       a added providing that
+        1       a added provisions relative
+        6       a added regulating the
+        1       a added regulating workmens
+       18       a added relative to
+        7       a added requiring the
+        1       a added restricting the
+        1       a added to prevent
+        1       a added under heading
+        1       a adjacent to erithmo
+        2       a adopt for the
+        ... etc ...
 ```
 
 ### 4. Process pre-1830s books to calculate rough Language Model
