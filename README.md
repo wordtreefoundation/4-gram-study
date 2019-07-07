@@ -128,24 +128,34 @@ Let's count the 4-grams in the Book of Mormon to get started, and then use that 
 Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
 
 ```
-$ ./text-to-ngrams 3 ../bomdb/bom.txt | sort | uniq -c | sort -bgr >bom.4grams
-Input File: ../bomdb/bom.txt
-size (bytes): 1417363
-  ngrams emitted: 253386
+$ ./text-to-ngrams -n 4 ../bomdb/bom.txt | ./tally-lines -c >bom.4grams.tallied
 ```
 
-We can check that the `bom.4grams` file contains a list of ngrams, counted & sorted:
+We can check that the `bom.4grams.tallied` file contains a list of tallied ngrams, sorted alphabetically:
 
 ```
 $ less bom.4grams
+        1       a and he spake
+        1       a bad one for
+        1       a ball or director
+        1       a band of christians
+        1       a band which had
+        1       a banner upon the
+        1       a battle commenced between
+        ...
+```
 
-   1398 came to pass
-   1396 it came to
-   1333 to pass that
-   1164 and it came
-    481 of the lord
-    444 the land of
-...
+As an interesting aside, you can also easily sort by tally (i.e. most frequently used phrases in descending order):
+```
+$ sort -bgr bom.4grams.tallied | less
+     1395       it came to pass
+     1285       came to pass that
+     1163       and it came to
+      266       i say unto you
+      233       to pass that the
+      168       to pass that when
+      160       now it came to
+        ...
 ```
 
 **Next: Counting 4-grams in the entire library**
