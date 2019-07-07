@@ -190,16 +190,18 @@ We'll use a shell-script based "map-reduce" algorithm to vastly speed up calcula
 $ find ../library/ -name '*.md.4grams' | shuf >library.toc
 ```
 
-Then, let's sum up the ngrams in sets of 20 books:
+Then, let's sum up the ngrams in sets of 64 books:
 
 ```
 $ mkdir output
-$ cat library.toc | \
-   parallel -j0 -N20 \
-      --progress --memfree 16G --joblog jobs.log \
+$ cat library.toc \
+  | parallel -j4 -N64 --progress \
+      --joblog jobs.log \
       --files --tmpdir output \
-      ./tally-ngrams
+      gunzip -c {} '|' ./tally-lines '|' gzip -c
 ```
+
+Note: if you run out of memory, you can reduce `-N64` to something smaller. This is the number of books held in memory per process.
 
 **TODO: explain next reduction step**
 
