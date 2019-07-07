@@ -134,7 +134,7 @@ $ ./text-to-ngrams -n 4 ../bomdb/bom.txt | ./tally-lines -c >bom.4grams.tallied
 We can check that the `bom.4grams.tallied` file contains a list of tallied ngrams, sorted alphabetically:
 
 ```
-$ less bom.4grams
+$ less bom.4grams.tallied
         1       a and he spake
         1       a bad one for
         1       a ball or director
