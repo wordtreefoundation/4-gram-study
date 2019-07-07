@@ -128,7 +128,7 @@ Let's count the 4-grams in the Book of Mormon to get started, and then use that 
 Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
 
 ```
-$ ./text-to-ngrams -n 4 ../bomdb/bom.txt | ./tally-lines -c >bom.4grams.tallied
+$ ./text-to-ngrams -n4 ../bomdb/bom.txt | ./tally-lines -c >bom.4grams.tallied
 ```
 
 We can check that the `bom.4grams.tallied` file contains a list of tallied ngrams, sorted alphabetically:
@@ -166,7 +166,7 @@ Now that we know how to count 4-grams in one book, let's apply this to counting 
 $ find ../library/ -name "*.md" | shuf >library.toc
 $ cat library.toc \
   | xargs -n 1 -I {} \
-    sh -c "./text-to-ngrams 4 {} | sort | uniq -c >{}.4grams.tallied"
+    sh -c "./text-to-ngrams -n4 {} | ./tally-lines -c >{}.4grams.tallied"
 ```
 
 Breaking it down:
@@ -185,7 +185,7 @@ For faster processing on a mult-core CPU, use [GNU Parallel](https://www.gnu.org
 $ find ../library/ -name "*.md" | shuf >library.toc
 $ parallel -j4 --progress \
     -a library.toc \
-    ./text-to-ngrams 4 {} \
+    ./text-to-ngrams -n4 {} \
     '|' ./tally-lines -c \
     '>' {}.4grams.tallied
 ```
