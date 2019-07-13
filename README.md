@@ -1,6 +1,6 @@
 # The 4-gram Study
 
-**NOTE:** This document is a work-in-progress as of 2019-06-26.
+**NOTE:** This document is a work-in-progress as of 2019-07-12.
 
 This repository documents the 4-gram study conducted in 2013 by the Wordtree Foundation, specifically Duane & Chris Johnson. The [study](http://wordtree.org/the-late-war/) connected the Book of Mormon (1830) and The Late War Between the United States and Great Britain, by Gilbert Hunt (1812). Other books of interest included The First Book of Napoleon and the Apocrypha.
 
@@ -11,7 +11,7 @@ The intent of this document is to make it easy to reproduce and/or extend the re
 
 The 4-gram study was, at its core, a search algorithm. Using a computer algorithm, the study compared approximately 100,000 books published prior to 1830 with the Book of Mormon (1830 edition).
 
-The authors sought to find a particular kind of similarity between the Book of Mormon & other books. The "similarity function" was the use of contextually rare 4-grams (i.e. "any four words in sequence") to discover possible influence. The central idea was that if there were a book (or books) that showed an overwhelming number of unusual similarities, then that book may have been an influence on the author of the Book of Mormon (i.e. probably Joseph Smith).
+The authors sought to find a particular kind of similarity between the Book of Mormon & other books. The "similarity function" was the use of contextually rare 4-grams (i.e. "any four words in sequence") to discover possible influence. The central idea was that if there were a book (or books) that showed an overwhelming number of unusual similarities, then that book may have influenced the author of the Book of Mormon (i.e. probably Joseph Smith).
 
 
 ## Data
@@ -21,7 +21,7 @@ The study used data published by [archive.org](https://archive.org/details/texts
 
 ## Replication
 
-The following directions should replicate the results of the study, with as much fidelity as possible to the original study. However, given that some data may have changed in the meantime (e.g. archive.org updates its library with new books, and may improve quality of OCR over time), it's possible to get slightly divergent results.
+The following directions should replicate the results of the study, with as much fidelity as possible to the original study. However, given that some data may have changed in the meantime (e.g. archive.org updates its library with new scans of old books, and may improve quality of OCR over time), it's possible to get slightly divergent results.
 
 ### Prerequisites
 
@@ -34,7 +34,6 @@ You should have the following *compilers, tools, and utilities*:
 - `git` (Distributed Version Control System)
 - text tools like `awk`, `sed`, `sort`, `uniq`, `xargs`
 - `parallel` (GNU Parallel)
-- `gzip` and `gunzip` (compression commands)
 
 *Hardware & Network*
 
@@ -53,7 +52,7 @@ Throughout this guide, we will assume a folder structure as follows:
 
 ```
 +- study
-   +- library       <-- 150k books from archive.org
+   +- library       <-- ~140,000 books from archive.org
    +- bomdb         <-- various editions of the Book of Mormon
    +- ngram-tools   <-- fast C-based tools for processing text as ngrams
 ```
@@ -63,16 +62,16 @@ Throughout this guide, we will assume a folder structure as follows:
 To algorithmically compare the Book of Mormon & other books, we need a text-only version of the Book of Mormon (scanned images of pages, even in PDF format, won't do). It's surprisingly difficult to find this data on the larger web, so we've built some data repositories and tools to make it easier.
 
 #### (Option 1 - Recommended) Download the Book of Mormon from our Books Repository
-*(~2min on a 150Mbit network)*
+*(~1 minute on a 150Mbit network)*
 
 We have a repository of [pseudo-biblical books](https://github.com/wordtreefoundation/books) (i.e. books that mimic the "Biblical Style" of the King James Version of the bible--if you're interested in this American phenomenon, look up Eran Shalev and [American Zion](https://www.amazon.com/American-Zion-Testament-Political-Revolution/dp/0300205902)). This repository includes the Book of Mormon.
 
 Download the [Book of Mormon - 1830 edition](https://raw.githubusercontent.com/wordtreefoundation/books/master/pseudo_biblical/Book%20of%20Mormon%20-%20Joseph%20Smith%20-%201830.md) from our Books repository
 
-#### (Option 2) Download our Book of Mormon Database Tool
+#### (Option 2) Download our Book of Mormon Database Tool (BomDB)
 *(~20min on a 150Mbit network)*
 
-The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool (developed by the Wordtree Foundation) has the 1830 original edition, among several other editions. It is very flexible, and allows you to do things like only compare ranges of chapters or verses, or choose which edition of the Book of Mormon you'd like to compare.
+The [bomdb](https://github.com/wordtreefoundation/bomdb) command-line tool (developed by the Wordtree Foundation) has the 1830 original edition, among several other editions. It is very flexible, and allows you to do things like only compare ranges of chapters or verses, or choose which edition of the Book of Mormon you'd like to compare, or exclude verses marked as very similar to the Bible.
 
 Download & install bomdb, then write the entire Book of Mormon, 1830 edition, without verse or chapter numbers to "bom.txt":
 
@@ -92,12 +91,12 @@ $ bundle exec bin/bomdb show --edition=1830 --no-color --no-verses >bom.txt
 The PDF versions will need some work by you before they can be used as text in the next step.
 
 
-### 2. Get English-language Books as Text Files, 1650 to 1830
+### 2. Get English-language Books as Text Files, 1650 to 1829
 
 #### (Option 1 - Recommended) Download our prepared data directly
 *(~1hr on a 150Mbit network)*
 
-We've prepared an archive of books from 1650 to 1829, which you can [download here](https://s3.amazonaws.com/data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB). This archive was downloaded in June of 2019.
+We've prepared an archive of books from 1650 to 1829, which you can [download here](http://data.wordtree.org/archive-org-english-books-1650-1829-asof-2019-06-24.tar.gz) (about 30GB). This archive was downloaded in June of 2019.
 
 These books are text-only, with a small (human-readable) YAML header at the top to identify its title, year, and author(s). They've been stored in sub-folders and sub-sub-folders so that a normal filesystem will handle the large quantity of books.
 
@@ -119,13 +118,26 @@ $ bundle exec bin/archdown -l ../library -y 1650-1830
 
 Note that archive.org has since changed its policies to limit the tool to downloading 10,000 files at a time, so it may require some manual restarting, updating the start year each time to avoid redundant downloading.
 
+### 3. Get a Word Frequency Baseline for pre-1830s Books
 
-### 3. Count the number of 4-grams in each pre-1830 book, including the Book of Mormon
+#### (Option 1) Download Baseline
+*(~10min on a 150Mbit network)*
+
+We've prepared a baseline using the archive of books from 1650 to 1829, which you can [download here](http://data.wordtree.org/baseline.4grams.culled.tallied.gz) (about 6GB). This baseline was calculated based on the archive of books downloaded in June of 2019, using the following procedure ("Calculate Baseline").
+
+#### (Option 2) Calculate Baseline from Raw Textual Data
 *(~6hrs on a 4-core 3.5Ghz machine with 1TB SSD & 64GB of RAM)*
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
 Use [ngram-tools](https://github.com/wordtreefoundation/ngram-tools) to count each 4-gram in the Book of Mormon and store it in a `.4grams` file. Build instructions and usage examples are also contained in the [ngram-tools readme](https://github.com/wordtreefoundation/ngram-tools).
+
+If we just wanted a list of all of the 4-grams in the Book of Mormon, we could execute `text-to-ngrams` with the `-n4` argument:
+```
+$ ./text-to-ngrams -n4 ../bomdb/bom.txt
+```
+
+But what we'd really like is a tally of the 4-grams, so that, for example, all of the occurrences of "it came to pass" are summed one one line, next to the "it came to pass" 4-gram. The following pipe from `text-to-ngrams` to `tally-lines` will get us what we need:
 
 ```
 $ ./text-to-ngrams -n4 ../bomdb/bom.txt | ./tally-lines -c >bom.4grams.tallied
@@ -145,7 +157,8 @@ $ less bom.4grams.tallied
         ...
 ```
 
-As an interesting aside, you can also easily sort by tally (i.e. most frequently used phrases in descending order):
+Once you have the tallied 4grams list, you can also sort by tally rather than alphabetically (i.e. most frequently used phrases in descending order):
+
 ```
 $ sort -bgr bom.4grams.tallied | less
      1395       it came to pass
@@ -208,37 +221,48 @@ The `*.md.4grams.tallied` files will contain two columns, the tally column (numb
         ... etc ...
 ```
 
-### 4. Process pre-1830s books to calculate rough Language Model
+**Next: Process pre-1830s books to calculate a rough Language Model**
 
 In order to properly weight the significance of matching ngrams, we need a rough "language model". What this means is that rather than using intuition to tell us whether a sequence of words is rare, we should use math. For instance, "it came to pass" might be in both the Book of Mormon and a sermon preached in 1820, but that [doesn't mean they are connected](https://books.google.com/ngrams/graph?content=it+came+to+pass&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cit%20came%20to%20pass%3B%2Cc0#t1%3B%2Cit%20came%20to%20pass%3B%2Cc0) because "it came to pass" is a very common 4-gram.
 
-By "rough" language model, we mean that this isn't a sophisticated language model, it's just a tally of occurrences. In a future study, it would be much better to use a proper language model. But in 2013, a tally is what we used.
+By "rough" language model, we mean that this isn't a sophisticated language model, it's just a tally of occurrences. In a future study, it would be better to use a proper language model. But in 2013, a tally of 4-grams is what we used, so we'll stick with that here.
 
 Using our [ngram-tools](https://github.com/wordtreefoundation/ngram-tools), you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded.
 
 We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. First, let's get a randomly shuffled list of the entire library's books:
 
 ```
-$ find ../library/ -name '*.md.4grams' | shuf >library.toc
+$ find ../library/ -name '*.md.4grams.tallied' | shuf >library.toc
 ```
 
-Then, let's sum up the ngrams in sets of 64 books:
+Then, let's sum up the ngrams:
 
 ```
 $ mkdir output
-$ cat library.toc \
-  | parallel -j4 -N64 --progress \
-      --joblog jobs.log \
-      --files --tmpdir output \
-      gunzip -c {} '|' ./tally-lines '|' gzip -c
+$ parallel -a library.toc \
+    --progress -j4 --xargs \
+    ./scripts/merge.sh {} \
+    '|' ./scripts/sum-consecutive.sh \
+    '>' ./output/{#}.t
 ```
 
-Note: if you run out of memory, you can reduce `-N64` to something smaller. This is the number of books held in memory per process.
+Even after this merge step, there will be over 100 files in the `round1` folder. We need 1 more reduction step (merge + sum) to get to a single file that represents all of the 4-grams in all of our pre-1830s books:
 
-**TODO: explain next reduction step**
+```
+$ cd output
+$ ../scripts/merge.sh *.t | ../scripts/sum-consecutive.sh > baseline.4grams.tallied
+```
 
-Note that calculating the baseline may take a long time (estimate 5 seconds per book, 150,000 books, that could take 200 hours).
+Lastly, in order to reduce the size of this file & speed things up in future steps, we remove single-occurrence 4-grams from the file, and gzip it:
 
+```
+$ cat baseline.4grams.tallied \
+   | awk -F $'\t' '{if ($1 > 1) print $0}' baseline.4grams.tallied \
+   | gzip -c \
+   > baseline.4grams.culled.tallied.gz
+```
+
+Note that calculating the baseline may take a long time (i.e. let it run over night).
 
 ### 5. Create a score for each book
 
