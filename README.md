@@ -126,7 +126,7 @@ Note that archive.org has since changed its policies to limit the tool to downlo
 We've prepared a baseline using the archive of books from 1650 to 1829, which you can [download here](http://data.wordtree.org/baseline.4grams.culled.tallied.gz) (about 6GB). This baseline was calculated based on the archive of books downloaded in June of 2019, using the following procedure ("Calculate Baseline").
 
 #### (Option 2) Calculate Baseline from Raw Textual Data
-*(~6hrs on a 4-core 3.5Ghz machine with 1TB SSD & 64GB of RAM)*
+*(~2 days on a 4-core 3.5Ghz machine with 1TB SSD & 64GB of RAM)*
 
 Let's count the 4-grams in the Book of Mormon to get started, and then use that as a starting-off point to count 4-grams in other books.
 
@@ -157,7 +157,7 @@ $ less bom.4grams.tallied
         ...
 ```
 
-Once you have the tallied 4grams list, you can also sort by tally rather than alphabetically (i.e. most frequently used phrases in descending order):
+Once you have the tallied 4-grams list, you can also sort by tally rather than alphabetically (i.e. most frequently used phrases in descending order):
 
 ```
 $ sort -bgr bom.4grams.tallied | less
@@ -246,12 +246,14 @@ $ parallel -a library.toc \
     '>' ./output/{#}.t
 ```
 
-Even after this merge step, there will be over 100 files in the `round1` folder. We need 1 more reduction step (merge + sum) to get to a single file that represents all of the 4-grams in all of our pre-1830s books:
+Even after this merge step, there will be over 100 files in the `output` folder. We need 1 more reduction step (merge + sum) to get to a single file that represents all of the 4-grams in all of our pre-1830s books:
 
 ```
 $ cd output
 $ ../scripts/merge.sh *.t | ../scripts/sum-consecutive.sh > baseline.4grams.tallied
 ```
+
+The reason we needed to use `parallel` to do this in the step prior is because we can't fit all of the ~140,000 book filenames on a single line as arguments to `merge.sh`. Plus, it parallelizes the processing and makes things go a bit faster.
 
 Lastly, in order to reduce the size of this file & speed things up in future steps, we remove single-occurrence 4-grams from the file, and gzip it:
 
