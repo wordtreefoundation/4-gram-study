@@ -229,13 +229,13 @@ By "rough" language model, we mean that this isn't a sophisticated language mode
 
 Using our [ngram-tools](https://github.com/wordtreefoundation/ngram-tools), you can fairly easily clean up & tally ngrams (specifically, 4-grams) from any book in the archive.org library that you downloaded.
 
-We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. First, let's get a randomly shuffled list of the entire library's books:
+We'll use a shell-script based "map-reduce" algorithm to vastly speed up calculating a baseline. Specifically, our map-reduce is a "merge + sum". First, let's get a randomly shuffled list of the entire library's books:
 
 ```
 $ find ../library/ -name '*.md.4grams.tallied' | shuf >library.toc
 ```
 
-Then, let's sum up the ngrams:
+Then, let's merge and sum up the ngrams:
 
 ```
 $ mkdir output
@@ -246,7 +246,7 @@ $ parallel -a library.toc \
     '>' ./output/{#}.t
 ```
 
-Even after this merge step, there will be over 100 files in the `output` folder. We need 1 more reduction step (merge + sum) to get to a single file that represents all of the 4-grams in all of our pre-1830s books:
+Even after this merge + sum step, there will be over 100 files in the `output` folder. We need 1 more reduction step (merge + sum) to get to a single file that represents all of the 4-grams in all of our pre-1830s books:
 
 ```
 $ cd output
